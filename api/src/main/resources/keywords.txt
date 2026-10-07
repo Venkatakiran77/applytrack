@@ -1,0 +1,76 @@
+# languages
+java
+python
+javascript
+typescript
+kotlin
+golang
+c#
+c++
+sql
+# backend
+spring boot
+spring security
+spring data
+spring cloud
+hibernate
+jpa
+microservices
+rest api
+graphql
+grpc
+kafka
+rabbitmq
+redis
+elasticsearch
+node.js
+express
+fastapi
+django
+flask
+.net
+# frontend
+react
+redux
+angular
+vue
+next.js
+html
+css
+tailwind
+material ui
+# data
+postgresql
+mysql
+mongodb
+oracle
+dynamodb
+snowflake
+apache spark
+airflow
+superset
+# devops & cloud
+docker
+kubernetes
+jenkins
+gitlab
+github actions
+ci/cd
+terraform
+aws
+azure
+gcp
+linux
+nginx
+# testing & practices
+junit
+mockito
+selenium
+tdd
+agile
+scrum
+jwt
+oauth2
+swagger
+postman
+git

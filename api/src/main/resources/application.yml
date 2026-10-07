@@ -5,12 +5,12 @@ spring:
     password: applytrack
   jpa:
     hibernate.ddl-auto: update
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/applytrack
+  mongodb:
+    uri: mongodb://localhost:27017/applytrack
 
 app:
   jwt:
     secret: ${JWT_SECRET:change-me-to-a-long-random-string-of-32+chars}
     expiry-minutes: 120
   followup-days: 7
+  followup-cron: "0 0 9 * * *"

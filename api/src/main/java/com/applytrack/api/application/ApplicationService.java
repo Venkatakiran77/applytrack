@@ -2,6 +2,7 @@ package com.applytrack.api.application;
 
 import com.applytrack.api.application.dto.*;
 import com.applytrack.api.common.ResourceNotFoundException;
+import com.applytrack.api.jd.JobDescriptionRepository;
 import com.applytrack.api.user.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -17,6 +18,7 @@ public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
     private final UserRepository userRepository;
+    private final JobDescriptionRepository jdRepository;
 
     public ApplicationResponse create(String email, ApplicationRequest req) {
         User user = userRepository.findByEmail(email)
@@ -54,10 +56,6 @@ public class ApplicationService {
         return ApplicationResponse.from(app);
     }
 
-    public void delete(String email, Long id) {
-        applicationRepository.delete(findOwned(email, id));
-    }
-
     // Other users' records are reported as 404, not 403, so ids can't be probed.
     private JobApplication findOwned(String email, Long id) {
         return applicationRepository.findByIdAndUserEmail(id, email)
@@ -71,5 +69,10 @@ public class ApplicationService {
         app.setResumeVersion(req.resumeVersion());
         app.setAppliedOn(req.appliedOn() != null ? req.appliedOn() : LocalDate.now());
         app.setNotes(req.notes());
+    }
+
+    public void delete(String email, Long id) {
+        applicationRepository.delete(findOwned(email, id));
+        jdRepository.deleteByApplicationId(id);
     }
 }

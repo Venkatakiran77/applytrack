@@ -5,4 +5,5 @@ import java.util.Optional;
 
 public interface JobDescriptionRepository extends MongoRepository<JobDescriptionDoc, String> {
     Optional<JobDescriptionDoc> findByApplicationId(Long applicationId);
+    void deleteByApplicationId(Long applicationId);
 }

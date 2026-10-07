@@ -43,8 +43,12 @@ public class JobApplication {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean followUpNeeded;
+
     @PrePersist @PreUpdate
     void touch() {
         lastUpdated = Instant.now();
+        followUpNeeded = false; // any real edit by the user clears the flag
     }
 }

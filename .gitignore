@@ -1,0 +1,14 @@
+# Java / Gradle
+build/
+.gradle/
+*.class
+# Node
+node_modules/
+dist/
+# IDE
+.idea/
+*.iml
+.vscode/
+# Env
+.env
+*.log

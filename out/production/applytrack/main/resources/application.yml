@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/applytrack?options=-c%20TimeZone=Asia/Kolkata
+    username: applytrack
+    password: applytrack
+  jpa:
+    hibernate.ddl-auto: update
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/applytrack
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-me-to-a-long-random-string-of-32+chars}
+    expiry-minutes: 120
+  followup-days: 7

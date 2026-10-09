@@ -47,3 +47,8 @@ dependencies {
 tasks.named('bootJar') {
 	archiveFileName = 'app.jar'
 }
+
+test {
+	useJUnitPlatform()
+	failOnNoDiscoveredTests = false
+}

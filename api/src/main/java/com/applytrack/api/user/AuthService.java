@@ -1,5 +1,6 @@
 package com.applytrack.api.user;
 
+import com.applytrack.api.common.ConflictException;
 import com.applytrack.api.security.JwtService;
 import com.applytrack.api.user.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class AuthService {
     public AuthResponse register(RegisterRequest req) {
         String email = req.email().trim().toLowerCase();
         if (userRepository.existsByEmail(email)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already registered");
+            throw new ConflictException("Email already registered");
         }
         userRepository.save(User.builder()
                 .email(email)
@@ -33,12 +34,8 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest req) {
         String email = req.email().trim().toLowerCase();
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, req.password()));
-        } catch (AuthenticationException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
-        }
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(email, req.password()));
         return new AuthResponse(jwtService.generateToken(email), email);
     }
 }

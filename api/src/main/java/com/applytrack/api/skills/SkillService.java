@@ -1,13 +1,12 @@
 package com.applytrack.api.skills;
 
+import com.applytrack.api.common.ConflictException;
 import com.applytrack.api.common.ResourceNotFoundException;
 import com.applytrack.api.skills.dto.*;
 import com.applytrack.api.user.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Locale;
@@ -30,7 +29,7 @@ public class SkillService {
     public SkillResponse add(String email, SkillRequest req) {
         String name = req.name().trim().toLowerCase(Locale.ROOT);
         if (skillRepository.existsByUserEmailAndName(email, name)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Skill already added");
+            throw new ConflictException("Skill already added");
         }
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));

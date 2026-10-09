@@ -1,0 +1,26 @@
+$kind: http-request
+url: "{{baseUrl}}/api/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "your-email@example.com",
+      "password": "YOUR_PASSWORD"
+    }
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      const response = pm.response.json();
+      if (pm.response.code >= 200 && pm.response.code < 300 && response.token) {
+          pm.collectionVariables.set("token", response.token);
+          console.log("JWT token saved to collection variables");
+      } else {
+          console.log("Login failed or token field is missing");
+      }
+    language: text/javascript
+order: 1000

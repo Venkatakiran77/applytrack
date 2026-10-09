@@ -1,0 +1,11 @@
+$kind: collection
+description: Generated Postman collection for ApplyTrack
+variables:
+  baseUrl: http://localhost:8080
+  token: ""
+auth:
+  - id: beeda3ed-92a3-4869-9f3f-eb446f188d37
+    type: bearer
+    name: bearer auth
+    credentials:
+      token: "{{token}}"

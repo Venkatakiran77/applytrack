@@ -1,0 +1,12 @@
+$kind: http-request
+url: "{{baseUrl}}/api/applications/1/match"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "jdText": "Java developer with Spring Boot and REST API experience"
+    }
+order: 1000

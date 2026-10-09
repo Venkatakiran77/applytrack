@@ -2,6 +2,10 @@
 workspace:
   id: 38f2bb39-2b5c-4818-8196-71a293d78362
 
+cloudResources:
+  collections:
+    ../postman/collections/ApplyTrack API Copy: 8c0bc496-684a-4cd0-9a97-55d01811e69e
+
 # All resources in the `postman/` folder are automatically registered in Local View.
 # Point to additional files outside the `postman/` folder to register them individually. Example:
 #localResources:

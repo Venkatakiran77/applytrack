@@ -1,0 +1,13 @@
+$kind: http-request
+url: "{{baseUrl}}/api/applications"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "company": "Example Company",
+      "position": "Software Engineer"
+    }
+order: 2000

@@ -20,4 +20,9 @@ public class MatchController {
                                @Valid @RequestBody MatchRequest req) {
         return matchService.match(principal.getUsername(), id, req);
     }
+
+    @GetMapping
+    public MatchResponse latest(@AuthenticationPrincipal UserDetails principal, @PathVariable Long id) {
+        return matchService.latest(principal.getUsername(), id);
+    }
 }

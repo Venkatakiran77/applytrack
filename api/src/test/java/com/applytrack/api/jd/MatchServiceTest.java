@@ -141,4 +141,29 @@ class MatchServiceTest {
         verify(jdRepository, never()).save(any());
         verifyNoInteractions(skillRepository);
     }
+
+    @Test
+    void latestReturnsTheStoredAnalysis() {
+        ownedApplication();
+        JobDescriptionDoc doc = JobDescriptionDoc.builder()
+                .applicationId(APP_ID).matchScore(50.0)
+                .extractedKeywords(List.of("java", "docker"))
+                .matchedKeywords(List.of("java"))
+                .missingKeywords(List.of("docker")).build();
+        when(jdRepository.findByApplicationId(APP_ID)).thenReturn(Optional.of(doc));
+
+        MatchResponse res = service.latest(EMAIL, APP_ID);
+
+        assertThat(res.matchScore()).isEqualTo(50.0);
+        assertThat(res.missingKeywords()).containsExactly("docker");
+    }
+
+    @Test
+    void latestThrowsWhenNothingAnalysedYet() {
+        ownedApplication();
+        when(jdRepository.findByApplicationId(APP_ID)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.latest(EMAIL, APP_ID))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
 }

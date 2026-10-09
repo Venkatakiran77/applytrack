@@ -121,7 +121,21 @@ export default function ApplicationsPage() {
         eyebrow="Your pipeline"
         title="Applications"
         action={
-          <Button variant="contained" startIcon={<AddIcon />} onClick={openAdd}>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<AddIcon />}
+            onClick={openAdd}
+            sx={{
+              px: 2,
+              py: 1,
+              fontSize: "0.875rem",
+              minHeight: 36,
+              borderRadius: 2,
+              textTransform: "none",
+              whiteSpace: "nowrap",
+            }}
+          >
             Add application
           </Button>
         }

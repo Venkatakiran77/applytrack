@@ -54,4 +54,14 @@ public class MatchService {
 
         return new MatchResponse(applicationId, score, List.copyOf(extracted), matched, missing);
     }
+
+    @Transactional(readOnly = true)
+    public MatchResponse latest(String email, Long applicationId) {
+        applicationRepository.findByIdAndUserEmail(applicationId, email)
+                .orElseThrow(() -> new ResourceNotFoundException("Application not found"));
+        JobDescriptionDoc doc = jdRepository.findByApplicationId(applicationId)
+                .orElseThrow(() -> new ResourceNotFoundException("No analysis yet"));
+        return new MatchResponse(applicationId, doc.getMatchScore(), doc.getExtractedKeywords(),
+                doc.getMatchedKeywords(), doc.getMissingKeywords());
+    }
 }

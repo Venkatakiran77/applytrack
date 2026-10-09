@@ -2,26 +2,34 @@ import { Box, Stack, Typography } from "@mui/material";
 
 export default function PageHeader({ eyebrow, title, action }) {
   return (
-    <Stack
-      direction="row"
-      justifyContent="space-between"
-      alignItems="flex-end"
-      sx={{ mb: 3 }}
-    >
-      <Box>
+    <Box sx={{ mb: 3 }}>
+      <Typography
+        variant="overline"
+        color="primary"
+        sx={{
+          display: "block",
+          fontWeight: 700,
+          letterSpacing: 1.5,
+          lineHeight: 1.5,
+        }}
+      >
+        {eyebrow}
+      </Typography>
+
+      <Stack direction="row" alignItems="center" spacing={2}>
         <Typography
-          variant="overline"
-          sx={{
-            color: "primary.light",
-            fontWeight: 700,
-            letterSpacing: "0.14em",
-          }}
+          variant="h4"
+          component="h1"
+          fontWeight={700}
+          sx={{ lineHeight: 1.2 }}
         >
-          {eyebrow}
+          {title}
         </Typography>
-        <Typography variant="h4">{title}</Typography>
-      </Box>
-      {action}
-    </Stack>
+
+        {action && (
+          <Box sx={{ display: "flex", alignItems: "center" }}>{action}</Box>
+        )}
+      </Stack>
+    </Box>
   );
 }

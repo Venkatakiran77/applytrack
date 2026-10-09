@@ -44,7 +44,7 @@ export default function SkillsPage() {
               placeholder="Add a skill and press Enter"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              inputProps={{ maxLength: 100 }}
+              slotProps={{ htmlInput: { maxLength: 100 } }}
             />
             <Button
               type="submit"
@@ -72,7 +72,18 @@ export default function SkillsPage() {
             No skills yet. Add the technologies you know.
           </Typography>
         )}
-        <Stack direction="row" flexWrap="wrap" gap={1}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 1,
+            width: "100%",
+            minWidth: 0,
+            "& .MuiChip-root": {
+              maxWidth: "100%",
+            },
+          }}
+        >
           {skills.map((s) => (
             <Chip
               key={s.id}
@@ -80,9 +91,16 @@ export default function SkillsPage() {
               color="primary"
               variant="outlined"
               onDelete={() => deleteMutation.mutate(s.id)}
+              sx={{
+                maxWidth: "100%",
+                "& .MuiChip-label": {
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                },
+              }}
             />
           ))}
-        </Stack>
+        </Box>
       </Paper>
     </>
   );

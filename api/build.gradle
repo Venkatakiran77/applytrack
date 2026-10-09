@@ -44,6 +44,6 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 }
 
-tasks.named('test') {
-	useJUnitPlatform()
+tasks.named('bootJar') {
+	archiveFileName = 'app.jar'
 }

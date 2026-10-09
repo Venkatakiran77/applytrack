@@ -7,10 +7,38 @@ services:
       POSTGRES_PASSWORD: applytrack
     ports: ["5432:5432"]
     volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U applytrack -d applytrack"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
 
   mongo:
     image: mongo:7
     ports: ["27017:27017"]
     volumes: [mongodata:/data/db]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  api:
+    build: ./api
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in the .env file}
+    ports: ["8080:8080"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      mongo: { condition: service_healthy }
+
+  web:
+    build:
+      context: ./web
+      args:
+        VITE_API_URL: http://localhost:8080
+    ports: ["3000:80"]
+    depends_on: [api]
 
 volumes: { pgdata: {}, mongodata: {} }

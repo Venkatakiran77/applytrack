@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/applytrack
+  mongodb:
+    uri: mongodb://mongo:27017/applytrack

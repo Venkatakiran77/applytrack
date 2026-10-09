@@ -26,35 +26,76 @@ export default function Layout() {
 
   return (
     <>
-      <AppBar position="static" color="default" elevation={1}>
-        <Toolbar>
-          <Typography variant="h6" sx={{ mr: 4 }}>
-            ApplyTrack
-          </Typography>
-          {LINKS.map((l) => (
-            <Button
-              key={l.to}
-              component={NavLink}
-              to={l.to}
-              end={l.end}
-              color="inherit"
+      <AppBar position="sticky">
+        <Container maxWidth="lg">
+          <Toolbar disableGutters sx={{ minHeight: 72, gap: 1 }}>
+            <Box
               sx={{
-                "&.active": { fontWeight: 700, textDecoration: "underline" },
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                display: "grid",
+                placeItems: "center",
+                fontWeight: 700,
+                fontSize: 14,
+                background: "linear-gradient(135deg, #7c6cf0, #a45df0)",
               }}
             >
-              {l.label}
+              AT
+            </Box>
+            <Typography
+              variant="subtitle1"
+              sx={{ fontWeight: 700, mr: 4, ml: 1 }}
+            >
+              ApplyTrack
+            </Typography>
+
+            {LINKS.map((l) => (
+              <Button
+                key={l.to}
+                component={NavLink}
+                to={l.to}
+                end={l.end}
+                sx={{
+                  color: "text.secondary",
+                  borderRadius: 0,
+                  px: 1.5,
+                  py: 3.2,
+                  borderBottom: "2px solid transparent",
+                  "&:hover": {
+                    color: "text.primary",
+                    background: "transparent",
+                  },
+                  "&.active": {
+                    color: "text.primary",
+                    borderBottomColor: "primary.main",
+                  },
+                }}
+              >
+                {l.label}
+              </Button>
+            ))}
+
+            <Box sx={{ flexGrow: 1 }} />
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ mr: 1, display: { xs: "none", sm: "block" } }}
+            >
+              {email}
+            </Typography>
+            <Button
+              variant="outlined"
+              color="inherit"
+              size="small"
+              onClick={handleLogout}
+            >
+              Logout
             </Button>
-          ))}
-          <Box sx={{ flexGrow: 1 }} />
-          <Typography variant="body2" sx={{ mr: 2 }}>
-            {email}
-          </Typography>
-          <Button color="inherit" onClick={handleLogout}>
-            Logout
-          </Button>
-        </Toolbar>
+          </Toolbar>
+        </Container>
       </AppBar>
-      <Container maxWidth="lg" sx={{ py: 3 }}>
+      <Container maxWidth="lg" sx={{ py: 5 }}>
         <Outlet />
       </Container>
     </>

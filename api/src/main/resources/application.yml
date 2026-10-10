@@ -1,18 +1,26 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/applytrack?options=-c%20TimeZone=Asia/Kolkata
-    username: applytrack
-    password: applytrack
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/applytrack?options=-c%20TimeZone=Asia%2FKolkata}
+    username: ${SPRING_DATASOURCE_USERNAME:applytrack}
+    password: ${SPRING_DATASOURCE_PASSWORD:applytrack}
+
   jpa:
-    hibernate.ddl-auto: update
+    hibernate:
+      ddl-auto: update
+
   mongodb:
-    uri: mongodb://localhost:27017/applytrack
+    uri: ${SPRING_MONGODB_URI:mongodb://localhost:27017/applytrack}
+
+server:
+  port: ${PORT:8080}
 
 app:
   cors:
-    allowed-origins: http://localhost:5173,http://localhost:3000
+    allowed-origins: ${APP_CORS_ORIGIN:http://localhost:5173,http://localhost:3000}
+
   jwt:
     secret: ${JWT_SECRET:change-me-to-a-long-random-string-of-32+chars}
     expiry-minutes: 120
+
   followup-days: 7
   followup-cron: "0 0 9 * * *"

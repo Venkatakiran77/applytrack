@@ -1,4 +1,3 @@
-rootProject.name = 'api'
 pluginManagement {
     repositories {
         maven { url 'https://maven-central.storage-download.googleapis.com/maven2/' }
@@ -6,3 +5,5 @@ pluginManagement {
         mavenCentral()
     }
 }
+
+rootProject.name = 'api'

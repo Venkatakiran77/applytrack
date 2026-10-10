@@ -6,7 +6,7 @@ COPY gradlew settings.gradle build.gradle ./
 COPY gradle gradle
 # Windows checkouts can have CRLF line endings, which break the script on Linux
 RUN sed -i 's/\r$//' gradlew && chmod +x gradlew
-RUN for i in 1 2 3 4; do ./gradlew dependencies --no-daemon > /dev/null && break || (echo "retry $i"; sleep 20); done
+RUN for i in 1 2 3 4; do ./gradlew dependencies --no-daemon > /dev/null && exit 0; echo "retry $i"; sleep 20; done; exit 1
 
 COPY src src
 RUN ./gradlew bootJar -x test --no-daemon

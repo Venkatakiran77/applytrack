@@ -127,10 +127,10 @@ export default function ApplicationsPage() {
             startIcon={<AddIcon />}
             onClick={openAdd}
             sx={{
-              px: 2,
+              px: { xs: 1.5, sm: 2 },
               py: 1,
-              fontSize: "0.875rem",
-              minHeight: 36,
+              fontSize: { xs: "0.8rem", sm: "0.875rem" },
+              minHeight: 40,
               borderRadius: 2,
               textTransform: "none",
               whiteSpace: "nowrap",
@@ -141,13 +141,18 @@ export default function ApplicationsPage() {
         }
       />
 
-      <Stack direction="row" sx={{ mb: 2 }}>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        sx={{ mb: 2 }}
+        spacing={1.5}
+      >
         <TextField
           select
           size="small"
           label="Status"
           value={status}
-          sx={{ minWidth: 180 }}
+          fullWidth
+          sx={{ maxWidth: { sm: 240 } }}
           onChange={(e) => {
             setStatus(e.target.value);
             setPage(0);

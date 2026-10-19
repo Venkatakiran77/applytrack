@@ -14,6 +14,12 @@ export default function StatusChip({ status }) {
         bgcolor: alpha(theme.palette[key].main, 0.15),
         color: theme.palette[key].light ?? theme.palette[key].main,
         border: `1px solid ${alpha(theme.palette[key].main, 0.4)}`,
+        maxWidth: "100%", // Ensures it doesn't overflow container bounds
+        "& .MuiChip-label": {
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          px: { xs: 1, sm: 1.25 }, // Slightly tighter padding on mobile
+        },
       })}
     />
   );

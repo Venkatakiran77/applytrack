@@ -9,45 +9,57 @@ import {
   Typography,
 } from "@mui/material";
 
-// Red = asked for by most of the jobs, amber = about half, blue = occasional
+// Red = frequently requested, amber = moderately requested, blue = occasional
 const barColor = (share) =>
   share >= 0.75 ? "error" : share >= 0.4 ? "warning" : "info";
 
 function SkillRow({ skill, total }) {
   const share = total > 0 ? skill.count / total : 0;
+
   return (
-    <Box>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "baseline",
-          gap: 2,
-          mb: 0.5,
-        }}
+    <Box sx={{ minWidth: 0 }}>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        justifyContent="space-between"
+        alignItems={{ xs: "flex-start", sm: "baseline" }}
+        spacing={{ xs: 0.25, sm: 1 }}
+        sx={{ mb: 0.75 }}
       >
         <Typography
           variant="body2"
-          fontWeight={500}
-          noWrap
-          sx={{ minWidth: 0 }}
+          fontWeight={600}
+          sx={{
+            minWidth: 0,
+            maxWidth: "100%",
+            overflowWrap: "anywhere",
+          }}
         >
           {skill.keyword}
         </Typography>
+
         <Typography
           variant="caption"
           color="text.secondary"
-          sx={{ flexShrink: 0, whiteSpace: "nowrap" }}
+          sx={{
+            flexShrink: 0,
+            whiteSpace: "normal",
+            overflowWrap: "anywhere",
+          }}
         >
-          Asked in {skill.count} of {total} job{total === 1 ? "" : "s"}
+          Asked in {skill.count} of {total} job
+          {total === 1 ? "" : "s"}
         </Typography>
-      </Box>
+      </Stack>
+
       <LinearProgress
         variant="determinate"
-        value={share * 100}
+        value={Math.min(100, Math.max(0, share * 100))}
         color={barColor(share)}
         aria-label={`${skill.keyword}: asked in ${skill.count} of ${total} jobs`}
-        sx={{ height: 6, borderRadius: 3 }}
+        sx={{
+          height: 7,
+          borderRadius: 4,
+        }}
       />
     </Box>
   );
@@ -55,23 +67,46 @@ function SkillRow({ skill, total }) {
 
 function ResumeCard({ resume }) {
   const total = resume.applicationsAnalyzed;
+
   return (
-    <Paper variant="outlined" sx={{ p: 2, borderRadius: 3 }}>
+    <Paper
+      variant="outlined"
+      sx={{
+        p: { xs: 1.5, sm: 2 },
+        borderRadius: 2.5,
+        minWidth: 0,
+        boxSizing: "border-box",
+      }}
+    >
       <Stack
-        direction="row"
+        direction={{ xs: "column", sm: "row" }}
         justifyContent="space-between"
-        alignItems="center"
+        alignItems={{ xs: "flex-start", sm: "center" }}
         spacing={1}
-        sx={{ mb: 1.5 }}
+        sx={{ mb: 2, minWidth: 0 }}
       >
-        <Typography fontWeight={600} noWrap sx={{ minWidth: 0 }}>
+        <Typography
+          fontWeight={600}
+          sx={{
+            minWidth: 0,
+            maxWidth: "100%",
+            overflowWrap: "anywhere",
+          }}
+        >
           {resume.resumeName}
         </Typography>
+
         <Chip
           size="small"
           variant="outlined"
           label={`${total} job${total === 1 ? "" : "s"} analyzed`}
-          sx={{ flexShrink: 0 }}
+          sx={{
+            maxWidth: "100%",
+            flexShrink: 0,
+            "& .MuiChip-label": {
+              whiteSpace: "normal",
+            },
+          }}
         />
       </Stack>
 
@@ -80,9 +115,9 @@ function ResumeCard({ resume }) {
           No missing skills found for this resume.
         </Typography>
       ) : (
-        <Stack spacing={1.5}>
-          {resume.skills.map((s) => (
-            <SkillRow key={s.keyword} skill={s} total={total} />
+        <Stack spacing={2}>
+          {resume.skills.map((skill) => (
+            <SkillRow key={skill.keyword} skill={skill} total={total} />
           ))}
         </Stack>
       )}
@@ -97,12 +132,37 @@ export default function MissingSkills({ data, isLoading, error }) {
     <Paper
       component="section"
       variant="outlined"
-      sx={{ p: 3, borderRadius: 4, display: "flex", flexDirection: "column" }}
+      sx={{
+        p: { xs: 2, sm: 3 },
+        borderRadius: { xs: 2.5, sm: 3 },
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        minWidth: 0,
+        boxSizing: "border-box",
+        overflow: "hidden",
+      }}
     >
-      <Typography variant="h6" fontWeight={700}>
+      <Typography
+        variant="h6"
+        fontWeight={700}
+        sx={{
+          fontSize: { xs: "1.1rem", sm: "1.25rem" },
+          lineHeight: 1.4,
+        }}
+      >
         Skills Gap by Resume
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{
+          mt: 1,
+          mb: 2.5,
+          lineHeight: 1.65,
+        }}
+      >
         Skills that the jobs you applied to asked for but this resume doesn't
         list yet. The ones at the top come up most often.
       </Typography>
@@ -113,31 +173,40 @@ export default function MissingSkills({ data, isLoading, error }) {
           <Skeleton variant="rounded" height={120} />
         </Stack>
       ) : error ? (
-        <Alert severity="error">
+        <Alert severity="error" sx={{ minWidth: 0 }}>
           Couldn't load your skills gap. Try again.
         </Alert>
       ) : resumes.length === 0 ? (
-        <Typography color="text.secondary">
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ lineHeight: 1.7 }}
+        >
           No skill gaps yet. They appear here once the job descriptions of your
           applications have been analyzed against a resume.
         </Typography>
       ) : (
         <Box
           sx={{
-            maxHeight: 480, // scrolls inside the card when you add more resumes
+            maxHeight: { xs: 400, sm: 480 },
             overflowY: "auto",
-            pr: 1,
+            overflowX: "hidden",
+            minWidth: 0,
+            pr: { xs: 0.5, sm: 1 },
             scrollbarGutter: "stable",
-            "&::-webkit-scrollbar": { width: 6 },
+            overscrollBehavior: "contain",
+            "&::-webkit-scrollbar": {
+              width: { xs: 4, sm: 6 },
+            },
             "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "rgba(255,255,255,0.2)",
+              backgroundColor: "action.disabledBackground",
               borderRadius: 3,
             },
           }}
         >
-          <Stack spacing={2}>
-            {resumes.map((r) => (
-              <ResumeCard key={r.resumeId} resume={r} />
+          <Stack spacing={{ xs: 1.5, sm: 2 }} sx={{ minWidth: 0 }}>
+            {resumes.map((resume) => (
+              <ResumeCard key={resume.resumeId} resume={resume} />
             ))}
           </Stack>
         </Box>

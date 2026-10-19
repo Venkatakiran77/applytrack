@@ -9,4 +9,5 @@ public record ApplicationRequest(
         @Size(max = 1000) String jobUrl,
         Long resumeId,          // Replaces the free-text version with a foreign key ID
         LocalDate appliedOn,
+        String jdText,
         @Size(max = 5000) String notes) {}

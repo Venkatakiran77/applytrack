@@ -3,6 +3,8 @@ package com.applytrack.api.application;
 import com.applytrack.api.application.dto.*;
 import com.applytrack.api.common.ResourceNotFoundException;
 import com.applytrack.api.jd.JobDescriptionRepository;
+import com.applytrack.api.jd.MatchService; // 1. Import MatchService
+import com.applytrack.api.jd.dto.MatchRequest; // 2. Import MatchRequest
 import com.applytrack.api.resume.Resume;
 import com.applytrack.api.resume.ResumeService;
 import com.applytrack.api.user.*;
@@ -21,7 +23,8 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final UserRepository userRepository;
     private final JobDescriptionRepository jdRepository;
-    private final ResumeService resumeService; // <-- Inject ResumeService here
+    private final ResumeService resumeService;
+    private final MatchService matchService; // 3. Inject MatchService here
 
     public ApplicationResponse create(String email, ApplicationRequest req) {
         User user = userRepository.findByEmail(email)
@@ -30,8 +33,21 @@ public class ApplicationService {
                 .user(user)
                 .status(ApplicationStatus.APPLIED)
                 .build();
-        apply(user, app, req); // Pass user to fetch the resume properly
-        return ApplicationResponse.from(applicationRepository.save(app));
+        apply(user, app, req);
+
+        JobApplication savedApp = applicationRepository.save(app);
+
+        // 4. Automatically trigger matching if job description text (jdText) is provided
+        if (req.jdText() != null && !req.jdText().isBlank()) {
+            try {
+                matchService.match(email, savedApp.getId(), new MatchRequest(req.jdText()));
+            } catch (Exception e) {
+                // Log the exception if needed, ensuring application creation doesn't fail
+                // due to a matching glitch.
+            }
+        }
+
+        return ApplicationResponse.from(savedApp);
     }
 
     @Transactional(readOnly = true)
@@ -52,6 +68,16 @@ public class ApplicationService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         apply(user, app, req);
+
+        // Optional: Trigger match on update as well if the JD text changes or is provided
+        if (req.jdText() != null && !req.jdText().isBlank()) {
+            try {
+                matchService.match(email, app.getId(), new MatchRequest(req.jdText()));
+            } catch (Exception e) {
+                // Handle or log exception
+            }
+        }
+
         return ApplicationResponse.from(app);
     }
 
@@ -61,7 +87,6 @@ public class ApplicationService {
         return ApplicationResponse.from(app);
     }
 
-    // Other users' records are reported as 404, not 403, so ids can't be probed.
     private JobApplication findOwned(String email, Long id) {
         return applicationRepository.findByIdAndUserEmail(id, email)
                 .orElseThrow(() -> new ResourceNotFoundException("Application not found"));
@@ -72,7 +97,6 @@ public class ApplicationService {
         app.setRole(req.role().trim());
         app.setJobUrl(req.jobUrl());
 
-        // Fetch resume using resumeId if provided, then set relationship and name version
         Resume resume = req.resumeId() == null ? null : resumeService.getOwned(user, req.resumeId());
         app.setResume(resume);
         app.setResumeVersion(resume != null ? resume.getName() : null);

@@ -19,6 +19,7 @@ import StatCard from "../components/StatCard";
 import { useDashboard } from "../hooks/useDashboard";
 import { STATUSES, STATUS_COLOR } from "../utils/constants";
 import { getErrorMessage } from "../utils/errors";
+import MissingSkills from "../components/MissingSkills";
 
 const label = (s) => s.charAt(0) + s.slice(1).toLowerCase();
 
@@ -74,6 +75,11 @@ export default function DashboardPage() {
           alignItems: "start",
         }}
       >
+        <MissingSkills
+          data={data.missingByResume}
+          isLoading={isLoading}
+          error={isError ? error : null}
+        />
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6">Response rate by resume version</Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -116,40 +122,6 @@ export default function DashboardPage() {
                 ))}
               </TableBody>
             </Table>
-          )}
-        </Paper>
-
-        <Paper sx={{ p: 3 }}>
-          <Typography variant="h6">Top missing keywords</Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Skills your analysed job descriptions ask for that you haven't
-            listed.
-          </Typography>
-          {data.topMissingKeywords.length === 0 ? (
-            <Typography color="text.secondary">
-              Analyse a job description to see gaps here.
-            </Typography>
-          ) : (
-            <Stack spacing={1.5}>
-              {data.topMissingKeywords.map((k) => (
-                <Box key={k.keyword}>
-                  <Stack direction="row" justifyContent="space-between">
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                      {k.keyword}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {k.count}
-                    </Typography>
-                  </Stack>
-                  <LinearProgress
-                    variant="determinate"
-                    color="error"
-                    value={(k.count / maxMissing) * 100}
-                    sx={{ height: 6, borderRadius: 3, mt: 0.5 }}
-                  />
-                </Box>
-              ))}
-            </Stack>
           )}
         </Paper>
       </Box>

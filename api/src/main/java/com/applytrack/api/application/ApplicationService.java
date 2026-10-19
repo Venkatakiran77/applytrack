@@ -3,6 +3,8 @@ package com.applytrack.api.application;
 import com.applytrack.api.application.dto.*;
 import com.applytrack.api.common.ResourceNotFoundException;
 import com.applytrack.api.jd.JobDescriptionRepository;
+import com.applytrack.api.resume.Resume;
+import com.applytrack.api.resume.ResumeService;
 import com.applytrack.api.user.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -19,6 +21,7 @@ public class ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final UserRepository userRepository;
     private final JobDescriptionRepository jdRepository;
+    private final ResumeService resumeService; // <-- Inject ResumeService here
 
     public ApplicationResponse create(String email, ApplicationRequest req) {
         User user = userRepository.findByEmail(email)
@@ -27,7 +30,7 @@ public class ApplicationService {
                 .user(user)
                 .status(ApplicationStatus.APPLIED)
                 .build();
-        apply(app, req);
+        apply(user, app, req); // Pass user to fetch the resume properly
         return ApplicationResponse.from(applicationRepository.save(app));
     }
 
@@ -46,7 +49,9 @@ public class ApplicationService {
 
     public ApplicationResponse update(String email, Long id, ApplicationRequest req) {
         JobApplication app = findOwned(email, id);
-        apply(app, req);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        apply(user, app, req);
         return ApplicationResponse.from(app);
     }
 
@@ -62,11 +67,16 @@ public class ApplicationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Application not found"));
     }
 
-    private void apply(JobApplication app, ApplicationRequest req) {
+    private void apply(User user, JobApplication app, ApplicationRequest req) {
         app.setCompany(req.company().trim());
         app.setRole(req.role().trim());
         app.setJobUrl(req.jobUrl());
-        app.setResumeVersion(req.resumeVersion());
+
+        // Fetch resume using resumeId if provided, then set relationship and name version
+        Resume resume = req.resumeId() == null ? null : resumeService.getOwned(user, req.resumeId());
+        app.setResume(resume);
+        app.setResumeVersion(resume != null ? resume.getName() : null);
+
         app.setAppliedOn(req.appliedOn() != null ? req.appliedOn() : LocalDate.now());
         app.setNotes(req.notes());
     }

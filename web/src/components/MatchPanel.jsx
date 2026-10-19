@@ -156,6 +156,22 @@ export default function MatchPanel({ applicationId }) {
         <Box
           sx={{ mt: 4, pt: 3, borderTop: "1px solid", borderColor: "divider" }}
         >
+          {result.basis && (
+            <Typography
+              variant="caption"
+              sx={{ display: "block", mb: 1, opacity: 0.8 }}
+            >
+              Compared against: {result.basis}
+            </Typography>
+          )}
+          {result.basis?.startsWith("Skills list") && (
+            <Alert severity="warning" sx={{ mb: 2 }}>
+              This application has no usable resume linked, so the manual skills
+              list was used. Edit the application and choose a resume for a
+              resume-based analysis.
+            </Alert>
+          )}
+
           {result.extractedKeywords.length === 0 ? (
             <Alert severity="info">
               No known technology keywords were found in this job description.
@@ -171,7 +187,6 @@ export default function MatchPanel({ applicationId }) {
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Based on your skills when you last ran the analysis.
-                    Re-analyze after adding skills.
                   </Typography>
                 </Box>
               </Stack>
@@ -179,7 +194,7 @@ export default function MatchPanel({ applicationId }) {
                 title="You have"
                 keywords={result.matchedKeywords}
                 color="success"
-                emptyText="None of the required keywords are in your skill list yet."
+                emptyText="None of the required keywords are in your linked source yet."
               />
               <KeywordGroup
                 title="Missing"

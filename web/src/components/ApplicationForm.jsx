@@ -8,11 +8,12 @@ import {
   DialogTitle,
   Stack,
   TextField,
+  MenuItem,
 } from "@mui/material";
+import { useResumes } from "../hooks/useResumes";
 
 const today = () => new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD in the local timezone
 
-// Rendered only while open, so state resets each time via the parent's `key`.
 export default function ApplicationForm({
   initial,
   saving,
@@ -24,10 +25,12 @@ export default function ApplicationForm({
     company: initial?.company ?? "",
     role: initial?.role ?? "",
     jobUrl: initial?.jobUrl ?? "",
-    resumeVersion: initial?.resumeVersion ?? "",
+    resumeId: initial?.resumeId ?? "", // Bind to resumeId for dropdown selection
     appliedOn: initial?.appliedOn ?? today(),
     notes: initial?.notes ?? "",
   });
+
+  const { data: resumes = [], isLoading: resumesLoading } = useResumes();
   const [touched, setTouched] = useState(false);
 
   const set = (field) => (e) =>
@@ -47,11 +50,13 @@ export default function ApplicationForm({
     e.preventDefault();
     setTouched(true);
     if (hasErrors) return;
+
+    // Submit payload with resumeId (dropping legacy resumeVersion text field)
     onSubmit({
       company: values.company.trim(),
       role: values.role.trim(),
       jobUrl: values.jobUrl.trim() || null,
-      resumeVersion: values.resumeVersion.trim() || null,
+      resumeId: values.resumeId === "" ? null : values.resumeId,
       appliedOn: values.appliedOn || null,
       notes: values.notes.trim() || null,
     });
@@ -100,13 +105,27 @@ export default function ApplicationForm({
             helperText={show("jobUrl") ? errors.jobUrl : " "}
           />
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+            {/* Resume Dropdown Field */}
             <TextField
-              label="Resume version"
-              placeholder="v1"
+              select
+              label="Resume"
               fullWidth
-              value={values.resumeVersion}
-              onChange={set("resumeVersion")}
-            />
+              value={values.resumeId}
+              onChange={set("resumeId")}
+              disabled={resumesLoading || resumes.length === 0}
+              helperText={
+                resumes.length === 0
+                  ? "Upload a resume in the Resumes tab first"
+                  : " "
+              }
+            >
+              {resumes.map((r) => (
+                <MenuItem key={r.id} value={r.id}>
+                  {r.name}
+                </MenuItem>
+              ))}
+            </TextField>
+
             <TextField
               label="Applied on"
               type="date"

@@ -4,6 +4,11 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME:applytrack}
     password: ${SPRING_DATASOURCE_PASSWORD:applytrack}
 
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+
   jpa:
     hibernate:
       ddl-auto: update

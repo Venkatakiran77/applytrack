@@ -6,12 +6,16 @@ const client = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// attach the JWT to every request
 client.interceptors.request.use((config) => {
+  // let the browser set multipart/form-data (with boundary) for file uploads
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  }
+
   const token = localStorage.getItem(TOKEN_KEY);
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
-});
+});;
 
 // expired or invalid token -> back to login
 client.interceptors.response.use(

@@ -1,5 +1,5 @@
 package com.applytrack.api.application;
 
 public enum ApplicationStatus {
-    APPLIED, SCREENING, INTERVIEW, OFFER, REJECTED
+    APPLIED, SCREENING, INTERVIEW, OFFER, SAVED, REJECTED
 }

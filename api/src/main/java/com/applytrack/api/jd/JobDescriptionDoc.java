@@ -22,4 +22,5 @@ public class JobDescriptionDoc {
     private List<String> missingKeywords;
     private double matchScore;
     private Instant analyzedAt;
+    private Long resumeId;
 }

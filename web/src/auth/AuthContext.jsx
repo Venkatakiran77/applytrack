@@ -38,6 +38,7 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(EMAIL_KEY);
+    sessionStorage.clear();
     setToken(null);
     setEmail(null);
     queryClient.clear(); // never show the previous user's cached data to the next login

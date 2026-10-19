@@ -5,6 +5,7 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { AuthProvider } from "./auth/AuthContext";
 import App from "./App";
 import theme from "./theme";
+import GlobalLoader from "./components/GlobalLoader";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +20,7 @@ createRoot(document.getElementById("root")).render(
         <CssBaseline />
         <AuthProvider>
           <App />
+          <GlobalLoader />
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>

@@ -1,5 +1,6 @@
 package com.applytrack.api.application;
 
+import com.applytrack.api.resume.Resume;
 import com.applytrack.api.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,6 +46,10 @@ public class JobApplication {
 
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean followUpNeeded;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resume_id")
+    private Resume resume;
 
     @PrePersist @PreUpdate
     void touch() {

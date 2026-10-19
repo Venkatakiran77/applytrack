@@ -13,6 +13,7 @@ const LINKS = [
   { to: "/", label: "Dashboard", end: true },
   { to: "/applications", label: "Applications" },
   { to: "/skills", label: "Skills" },
+  { to: "/resumes", label: "Resumes" },
 ];
 
 export default function Layout() {

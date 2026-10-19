@@ -4,12 +4,11 @@ import {
   updateApplication, updateApplicationStatus,
 } from '../api/applicationsApi';
 
-// key includes page, size, status and sort, so each combination is cached separately
 export function useApplications(params) {
   return useQuery({
     queryKey: ['applications', 'list', params],
     queryFn: () => fetchApplications(params),
-    placeholderData: keepPreviousData, // keep showing the old page while the next one loads
+    placeholderData: keepPreviousData,
   });
 }
 
@@ -25,7 +24,7 @@ function useRefreshAfterChange() {
   const queryClient = useQueryClient();
   return () => {
     queryClient.invalidateQueries({ queryKey: ['applications'] });
-    queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+    queryClient.invalidateQueries({ queryKey: ['dashboard'] }); // Ensures dashboard stats/missing keywords refresh instantly
   };
 }
 

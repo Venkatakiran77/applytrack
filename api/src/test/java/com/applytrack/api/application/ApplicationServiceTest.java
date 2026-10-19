@@ -76,7 +76,7 @@ class ApplicationServiceTest {
         when(applicationRepository.save(any(JobApplication.class))).thenAnswer(inv -> inv.getArgument(0));
 
         ApplicationResponse res = service.create(OWNER,
-                new ApplicationRequest("Acme", "Java Developer", null, "v1", null, null));
+                new ApplicationRequest("Acme", "Java Developer", null, null, null, null));
 
         ArgumentCaptor<JobApplication> captor = ArgumentCaptor.forClass(JobApplication.class);
         verify(applicationRepository).save(captor.capture());

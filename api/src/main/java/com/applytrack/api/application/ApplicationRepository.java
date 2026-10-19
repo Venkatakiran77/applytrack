@@ -1,6 +1,7 @@
 package com.applytrack.api.application;
 
-import com.applytrack.api.application.dto.Tally;
+import com.applytrack.api.dashboard.dto.ResumeCount;
+import com.applytrack.api.user.User;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,6 +21,8 @@ public interface ApplicationRepository extends JpaRepository<JobApplication, Lon
 
     Optional<JobApplication> findByIdAndUserEmail(Long id, String email);
 
+    boolean existsByResume(com.applytrack.api.resume.Resume resume); // Used to block deleting a resume in use
+
     @Modifying
     @Query("""
         update JobApplication a
@@ -31,11 +34,15 @@ public interface ApplicationRepository extends JpaRepository<JobApplication, Lon
     int flagStale(@Param("statuses") Collection<ApplicationStatus> statuses,
                   @Param("cutoff") Instant cutoff);
 
+
     @Query("""
-        select new com.applytrack.api.application.dto.Tally(a.resumeVersion, a.status, count(a))
-          from JobApplication a
-         where a.user.email = :email
-         group by a.resumeVersion, a.status
-        """)
-    List<Tally> tallyByResumeAndStatus(@Param("email") String email);
+       select new com.applytrack.api.dashboard.dto.ResumeCount(
+           r.name, count(a), sum(case when a.status in :responded then 1L else 0L end))
+       from JobApplication a join a.resume r
+       where a.user = :user
+       group by r.id, r.name
+       order by r.name
+       """)
+    List<ResumeCount> resumeStats(@Param("user") User user,
+                                  @Param("responded") Collection<ApplicationStatus> responded);
 }
